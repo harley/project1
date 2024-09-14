@@ -1,21 +1,24 @@
 import chainlit as cl
+import openai
+from dotenv import load_dotenv
+import os
 
-# Define the system prompt
-system_prompt = "You are a helpful assistant."
+# Load environment variables from .env file
+load_dotenv()
+
+# Set your OpenAI API key from the environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-# Define the Chainlit app
 @cl.on_message
-def main(message: str):
-    response = cl.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+async def main(message: str):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
         messages=[
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": message},
         ],
     )
-    cl.send_message(response.choices[0].message["content"])
 
-
-if __name__ == "__main__":
-    cl.run(host="0.0.0.0", port=8000)
+    assistant_message = response["choices"][0]["message"]["content"]
+    await cl.send_message(assistant_message)
