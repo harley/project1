@@ -3,6 +3,7 @@ from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import os
 import logging
+from langsmith import traceable  # Import traceable
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,6 +26,7 @@ settings = {
 
 
 @cl.on_message
+@traceable  # Use the traceable decorator from langsmith
 async def on_message(message: cl.Message):
     logging.debug(f"Received message: {message.content}")
 
